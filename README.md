@@ -3,7 +3,9 @@ From Ruby to Haskell:  An Introduction
 
 This repository contains support materials for the presentation/tutorial
 _From Ruby to Haskell: An Introduction_, to be given in Tokyo on
-2013-01-22.
+2013-01-22. See the following page for details:
+
+  http://www.tokyorubyistmeetup.org/events/2323
 
 The presentation slides and notes will be added in the next few days.
 
