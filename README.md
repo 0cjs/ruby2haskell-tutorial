@@ -3,18 +3,18 @@ From Ruby to Haskell:  An Introduction
 
 This repository contains support materials for the presentation/tutorial
 _From Ruby to Haskell: An Introduction_, to be given in Tokyo on
-2013-01-22. See the following page for details:
+2013-01-22. See the [event page][event] for details:
 
-  http://www.tokyorubyistmeetup.org/events/2323
+[event]: http://www.tokyorubyistmeetup.org/events/2323
 
 The presentation slides and notes will be added in the next few days.
 
 You will need the following software installed on your computer:
 
-    * Git
-    * A text editor
-    * The Matz Ruby interpreter (the original, "standard" Ruby implementation)
-    * The Glasgow Haskell Compiler (and interpreter)
+* Git
+* A text editor
+* The Matz Ruby interpreter (the original, "standard" Ruby implementation)
+* The Glasgow Haskell Compiler (and interpreter)
 
 You will also need to be familiar with using Git and and your editor.
 
@@ -31,15 +31,15 @@ little bit of familarity with the command line interface).
 Software Sources
 ----------------
 
-Git is typically available through the packging system used with your OS
-(except Windows); for example, the command [1] will install it on Ubuntu
-Linux systems. If it is not, you can download a client from [2]. If you
-typically use a GUI for file manipulation, you may also wish to download
-a GUI interface, such as TortoiseGit for Windows.[3]
+Git is typically available through the packging system used with your
+OS (except Windows); for example, the command `sudo apt-get install
+git-core` will install it on Ubuntu Linux systems. If it is not, you can
+download a client from [here][git-clients]. If you typically use a GUI
+for file manipulation, you may also wish to download a GUI interface,
+such as [TortoiseGit for Windows][tortoisegit].
 
-    [1]: sudo apt-get install git-core
-    [2]: http://git-scm.com/downloads
-    [3]: https://code.google.com/p/tortoisegit/
+[git-clients]: http://git-scm.com/downloads
+[tortoisegit]: https://code.google.com/p/tortoisegit/
 
 Being a Rubyist, you should have Ruby already installed on your system.
 We use the Matz interpreter, which is the original Ruby implementation,
@@ -48,23 +48,23 @@ You will probably want the interactive ruby interpreter, irb, available
 as we use that in many of the early examples.
 
 GHC (the Glasgow Haskell Compiler, which includes an interpreter) is
-also typically available as a package; the command [4] will install it
-under Ubuntu Linux. Though it's often an older version, that's fine for
-this tutorial.
+also typically available as a package; `sudo apt-get install ghc` will
+install it under Ubuntu Linux. Though it's often an older version,
+that's fine for this tutorial.
 
-If not available as a package, you can download the Haskell Platform
-from [5], which will give you both GHC and a wide set of commonly used
-libraries. GHC binaries are also available from the GHC home page[6] if
-for some reason the Haskell Platform doesn't work for you.
+If not available as a package, you can download the [Haskell
+Platform][haskplat] from [5], which will give you both GHC and a wide
+set of commonly used libraries. GHC binaries are also available from the
+[GHC home page][ghc] if for some reason the Haskell Platform doesn't
+work for you.
 
-[4]: sudo apt-get install ghc
-[5]: http://www.haskell.org/platform/
-[6]: http://www.haskell.org/ghc/
+[haskplat]: http://www.haskell.org/platform/
+[ghc]: http://www.haskell.org/ghc/
 
 Testing Your Installation
 -------------------------
 
-To test that the interpreter is working, type "ghci" at the command line
+To test that the interpreter is working, type `ghci` at the command line
 prompt. You should see something resembling the following output:
 
     GHCi, version 7.4.1: http://www.haskell.org/ghc/  :? for help
@@ -73,13 +73,13 @@ prompt. You should see something resembling the following output:
     Loading package base ... linking ... done.
     Prelude>
 
-Typing ":q" at the GHCI prompt will quit back to the command line:
+Typing `:q` at the GHCI prompt will quit back to the command line:
 
     Prelude> :q
     Leaving GHCi.
 
 To test that the load-and-go compiler is properly installed, change to
-the directory containing this README file and type "runghc Main.hs".
+the directory containing this README file and type `runghc Main.hs`.
 (This command compiles the given soruce code file and then runs it.) It
 should print "Hello, world." and return you to the command line prompt.
 Feel free to change the string to something else and re-run the program
