@@ -20,8 +20,8 @@ The examples and code given here were developed and tested under Ubuntu
 Linux, but should work just fine under other versions of Linux, MacOS
 and Windows.
 
-Software Sources
-----------------
+Installing Git
+--------------
 
 Git is typically available through the packging system used with your
 OS (except Windows); for example, the command `sudo apt-get install
@@ -33,11 +33,17 @@ such as [TortoiseGit for Windows][tortoisegit].
 [git-clients]: http://git-scm.com/downloads
 [tortoisegit]: https://code.google.com/p/tortoisegit/
 
+Installing Ruby
+---------------
+
 Being a Rubyist, you should have Ruby already installed on your system.
 We use the Matz interpreter, which is the original Ruby implementation,
 but if you're more comfortable with another one, that will do as well.
 You will probably want the interactive ruby interpreter, irb, available
 as we use that in many of the early examples.
+
+Installing Haskell
+------------------
 
 GHC (the Glasgow Haskell Compiler, which includes an interpreter) is
 also typically available as a package; `sudo apt-get install ghc` will
