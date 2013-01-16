@@ -50,6 +50,9 @@ also typically available as a package; `sudo apt-get install ghc` will
 install it under Ubuntu Linux. Though it's often an older version,
 that's fine for this tutorial.
 
+Under OSX, if you are using brew, you can use
+`brew install haskell-platform`.
+
 If not available as a package, you can download the [Haskell
 Platform][haskplat] from [5], which will give you both GHC and a wide
 set of commonly used libraries. GHC binaries are also available from the
