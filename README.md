@@ -13,23 +13,15 @@ You will need the following software installed on your computer:
 
 * Git
 * A text editor
-* The Matz Ruby interpreter (the original, "standard" Ruby implementation)
+* Ruby 1.9.3
 * The Glasgow Haskell Compiler (and interpreter)
-
-You will also need to be familiar with using Git and and your editor.
-
-Familiarity with Ruby is not strictly required, but will be quite
-useful. If you don't know Ruby, consider teaming up with someone else in
-the tutorial who does and can help you out with code and concepts you
-don't understand.
 
 The examples and code given here were developed and tested under Ubuntu
 Linux, but should work just fine under other versions of Linux, MacOS
-and Windows (though under MacOS and Windows you will need to have a
-little bit of familarity with the command line interface).
+and Windows.
 
-Software Sources
-----------------
+Installing Git
+--------------
 
 Git is typically available through the packging system used with your
 OS (except Windows); for example, the command `sudo apt-get install
@@ -41,16 +33,25 @@ such as [TortoiseGit for Windows][tortoisegit].
 [git-clients]: http://git-scm.com/downloads
 [tortoisegit]: https://code.google.com/p/tortoisegit/
 
+Installing Ruby
+---------------
+
 Being a Rubyist, you should have Ruby already installed on your system.
 We use the Matz interpreter, which is the original Ruby implementation,
 but if you're more comfortable with another one, that will do as well.
 You will probably want the interactive ruby interpreter, irb, available
 as we use that in many of the early examples.
 
+Installing Haskell
+------------------
+
 GHC (the Glasgow Haskell Compiler, which includes an interpreter) is
 also typically available as a package; `sudo apt-get install ghc` will
 install it under Ubuntu Linux. Though it's often an older version,
 that's fine for this tutorial.
+
+Under OSX, if you are using brew, you can use
+`brew install haskell-platform`.
 
 If not available as a package, you can download the [Haskell
 Platform][haskplat] from [5], which will give you both GHC and a wide
