@@ -16,17 +16,9 @@ You will need the following software installed on your computer:
 * Ruby 1.9.3
 * The Glasgow Haskell Compiler (and interpreter)
 
-You will also need to be familiar with using Git and and your editor.
-
-Familiarity with Ruby is not strictly required, but will be quite
-useful. If you don't know Ruby, consider teaming up with someone else in
-the tutorial who does and can help you out with code and concepts you
-don't understand.
-
 The examples and code given here were developed and tested under Ubuntu
 Linux, but should work just fine under other versions of Linux, MacOS
-and Windows (though under MacOS and Windows you will need to have a
-little bit of familarity with the command line interface).
+and Windows.
 
 Software Sources
 ----------------
