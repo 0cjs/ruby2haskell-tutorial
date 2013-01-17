@@ -13,7 +13,8 @@ You will need the following software installed on your computer:
 
 * Git
 * A text editor
-* The Matz Ruby interpreter (the original, "standard" Ruby implementation)
+* A Ruby implementation including an interpreter (version 1.8 or 1.9
+  of the original "Matz" ruby is fine)
 * The Glasgow Haskell Compiler (and interpreter)
 
 You will also need to be familiar with using Git and and your editor.
