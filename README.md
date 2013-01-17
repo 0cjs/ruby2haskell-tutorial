@@ -32,6 +32,8 @@ little bit of familarity with the command line interface).
 Software Sources
 ----------------
 
+#### Git
+
 Git is typically available through the packging system used with your
 OS (except Windows); for example, the command `sudo apt-get install
 git-core` will install it on Ubuntu Linux systems. If it is not, you can
@@ -42,11 +44,15 @@ such as [TortoiseGit for Windows][tortoisegit].
 [git-clients]: http://git-scm.com/downloads
 [tortoisegit]: https://code.google.com/p/tortoisegit/
 
+#### Ruby
+
 Being a Rubyist, you should have Ruby already installed on your system.
 We use the Matz interpreter, which is the original Ruby implementation,
 but if you're more comfortable with another one, that will do as well.
 You will probably want the interactive ruby interpreter, irb, available
 as we use that in many of the early examples.
+
+#### GHC
 
 GHC (the Glasgow Haskell Compiler, which includes an interpreter) is
 also typically available as a package; `sudo apt-get install ghc` will
