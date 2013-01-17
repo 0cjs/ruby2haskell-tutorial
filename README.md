@@ -56,8 +56,8 @@ as we use that in many of the early examples.
 
 GHC (the Glasgow Haskell Compiler, which includes an interpreter) is
 also typically available as a package; `sudo apt-get install ghc` will
-install it under Ubuntu Linux. Though it's often an older version,
-that's fine for this tutorial. Under OSX, if you are using brew, you can
+install it under Ubuntu Linux. (Though it's often an older version,
+that's fine for this tutorial.) Under OSX, if you are using brew, you can
 use `brew install haskell-platform`.
 
 If not available as a package, you can download the [Haskell
