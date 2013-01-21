@@ -1,15 +1,17 @@
 From Ruby to Haskell:  An Introduction
 ======================================
 
-This repository contains support materials for the presentation/tutorial
-_From Ruby to Haskell: An Introduction_, to be given in Tokyo on
-2013-01-22. See the [event page][event] for details:
+This repository contains the slides, notes and support materials for
+the presentation/tutorial _From Ruby to Haskell: An Introduction_, to
+be given in Tokyo on 2013-01-22. See the [event page][event] for event
+details.
 
 [event]: http://www.tokyorubyistmeetup.org/events/2323
 
-The presentation slides and notes will be added in the next few days.
-
-You will need the following software installed on your computer:
+Though it's not required, I encourage participants to work along with me
+through the examples given. (Feel free to do this in groups of two or
+three if you are missing software or Ruby expertise.) To do this, you
+will need the following software installed on your computer:
 
 * Git
 * A text editor
@@ -92,17 +94,3 @@ the directory containing this README file and type `runghc Main.hs`.
 should print "Hello, world." and return you to the command line prompt.
 Feel free to change the string to something else and re-run the program
 to verify that you're comfortable with your edit/run cycle.
-
-Tutorial Activities and Exercises
----------------------------------
-
-During the tutorial I will be presenting snippets of code on the
-projector. During the earlier examples I expect you to type these in to
-a GHC intperpreter prompt as you did above; in later examples we'll be
-editing and running files, again as you did above. During the course
-of this, and especially when we get to the small programming exercises
-after the presentation, people are encouraged to work in groups of two
-or three if they feel comfortable doing that. You may want to make
-appropriate tweaks to your development environment, if you feel you
-need any, to support working with two or three people in front of your
-computer.

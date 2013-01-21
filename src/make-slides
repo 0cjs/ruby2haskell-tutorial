@@ -1,0 +1,21 @@
+#!/bin/bash -e
+#
+# Requires the latex-beamer package.
+#
+
+cd $(dirname $0)
+
+tex_compile() {
+    if ! pdflatex -halt-on-error -interaction batchmode $1.tex; then
+        # re-run in verbose mode to show error
+        pdflatex -halt-on-error $1.tex
+    else
+        pdflatex -halt-on-error -interaction batchmode $1.tex
+        echo No errors found.
+    fi
+    mv $1.pdf ../
+}
+
+tex_compile slides
+sed -e '/show only notes/s/^%//' slides.tex > notes.tex
+tex_compile notes

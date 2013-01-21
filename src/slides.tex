@@ -1,0 +1,1695 @@
+\pdfcatalog{/PageMode /FullScreen}   % Nice thought, but doesn't seem to work.
+
+\frenchspacing
+
+% Short commands for backslash and typewriter text.
+\newcommand{\B}{\textbackslash}
+\newcommand{\HH}{{-}{-}{ }}
+\newcommand{\T}[1]{\texttt{\small{#1}}}
+\newcommand{\TB}[1]{\texttt{\small{\B #1}}}
+
+% From generic-ornate-15min-45min.en.tex
+
+\documentclass[xcolor=dvipsnames]{beamer}          % 11pt is default
+%\documentclass[10pt]{beamer}
+
+%\setbeameroption{show notes}
+%\setbeameroption{show only notes}
+
+%\usepackage{mathptmx}
+%\usepackage{helvet}
+
+\mode<presentation>
+{
+  \usetheme{default}    % default, Boadilla, Pittsburgh, Warsaw
+  \usefonttheme[stillsansseriflarge]{serif}
+  %\useroutertheme{default}
+
+  \setbeamercovered{transparent=0}
+}
+
+\usepackage[english]{babel}
+% or whatever
+
+\usepackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{03B1}{$\alpha$}
+\DeclareUnicodeCharacter{03B8}{$\theta$}
+%\usepackage{newunicodechar}
+%\newunicodechar{θ}{$\theta$}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+%----------------------------------------------------------------------
+% Listings package Setup
+% See: https://en.wikibooks.org/wiki/LaTeX/Packages/Listings
+%
+% side-by-side listings:
+% http://compgroups.net/comp.text.tex/lstlistings-side-by-side/1917817
+% ----------------------------------------------------------------------
+
+\usepackage{listings}
+
+\lstdefinestyle{custom}{
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  gobble=10
+}
+\lstset{style=custom}
+
+% escapechar ¦ is vim digraph <C-K>||
+
+% output in listings (default for lstlisting)
+\lstdefinestyle{outp}{ basicstyle=\footnotesize\ttfamily\color{Black} }
+\lstnewenvironment{olisting}{\lstset{style=outp,escapechar=¦}}{}
+\newcommand{\lO}[1]{\color{Black}{#1}}
+
+% Haskell in listings.
+\lstdefinestyle{hask}{ basicstyle=\footnotesize\ttfamily\color{MidnightBlue} }
+\lstnewenvironment{hlisting}{\lstset{style=hask,escapechar=¦}}{}
+\newcommand{\lH}[1]{\color{MidnightBlue}{#1}}
+\newcommand{\lT}[1]{\color{Fuchsia}{#1}}        % type-level language
+
+% Ruby in listings.
+\lstdefinestyle{rub}{ basicstyle=\footnotesize\ttfamily\color{BrickRed} }
+\lstnewenvironment{rlisting}{\lstset{style=rub,escapechar=¦}}{}
+\newcommand{\lR}[1]{\color{BrickRed}{#1}}
+\newcommand{\lRF}[1]{\color{BrickRed}{#1}\ \ \ \ \ \ \ \ } % with fill
+
+% Shell command highlight in listings
+\newcommand{\lS}[1]{\color{Green}{#1}}
+
+%----------------------------------------------------------------------
+% Title etc.
+
+\title[From Ruby to Haskell]{From Ruby to Haskell:\\An Introduction}
+
+\author{Curt J. Sampson \\ \texttt{<cjs@cynic.net>}}
+
+\date[TRM 2013-01-22]{Tokyo Rubyist Meetup \\ 2013-01-22}
+
+%----------------------------------------------------------------------
+
+% To have a table of contents at each subsection:
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+\begin{document}
+
+\section{Title}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\section{Introduction}
+%\subsection[Short First Subsection Name]{First Subsection Name}
+
+\begin{frame}[fragile]{Introduction}
+\begin{itemize}
+    \item This presentation is an introduction to some of the cool
+        features of Haskell in a way that should be comfortable
+        for Ruby prorammers.
+    \item It won't really teach you to program in Haskell, but I hope
+        it will show you why you should learn to do so.
+    \item We're focused on showing what's available and why it's
+        cool, rather than delving too deeply into the details of any
+        particular feature.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{What We Cover}
+\begin{itemize}
+    \item We will cover:
+    \begin{itemize}
+        \item A fair amount of Haskell syntax.
+        \item Some things we do in similar ways in both Haskell and Ruby.
+        \item Some neat and powerful things Haskell does that Ruby doesn't.
+    \end{itemize}
+    \item These slides and the example code files are all available in
+        the github repo:
+        \begin{olisting}
+            https://github.com/cjs-cynic-net/ruby2haskell-tutorial
+        \end{olisting}
+    \item If you know Ruby reasonably well (or can pick it up quickly!),
+        most of the the Haskell code presented here should be easy to
+        read and understand.
+    \item If something seems too weird, well, remember that before you
+        knew Ruby, this was weird, too:
+        \begin{rlisting}
+            a.collect { |x| ... }
+        \end{rlisting}
+\end{itemize}
+\end{frame}
+\note[enumerate]{
+    \item For this presentation, we assume the audience has a reasonably
+        good knowledge of Ruby, particularly Ruby-ish idioms. That said,
+        it shouldn't be too hard for users of other languages to get
+        some sense of the Ruby idioms, and learn the Haskell ones.
+    \item It turns out, quite a number of things we do in Haskell are
+        not so different from what we do in Ruby!
+    \item There's much more to Haskell than we have time for in this
+        presentation, but hopefully what you see here will motivate
+        you to learn more.
+}
+
+
+\subsection{The Interpreter}
+
+\begin{frame}[fragile]{The Interpreter}
+\begin{itemize}
+    \item Standard Matz Ruby comes with a REPL you can use to evaluate
+        Ruby expressions:
+        \begin{olisting}
+            $ ¦\lS{irb}¦
+            irb(main):001:0> ¦\lR{2 * 3}¦
+            => 6
+            irb(main):002:0>
+        \end{olisting}
+    \note[item]{ REPL stands for "Read Evaluate Print Loop." }
+    \note[item]{ In listings in this presentation I show Ruby code in
+        red, Haskell code in blue, shell commands in green, and output
+        in black. Sometimes listings will be shown with Ruby and Haskell
+        code side by side. }
+    \item GHC, the Glasgow Haskell Compiler, also includes an interpreter:
+        \begin{olisting}
+            $ ¦\lS{ghci -v0}¦          ¦\lS{\# verbosity level zero}¦
+            Prelude> ¦\lH{2 * 3}¦
+            6
+            Prelude>
+        \end{olisting}
+    \note[item]{ I use the \T{-v0} option to \T{ghci} to reduce
+        verbosity to make the output fit the slide; you should feel free
+        to leave it out. }
+    \note[item]{ I encourage you to bring up these interpreters in
+        windows on your laptops and type along as we go. If anybody has any
+        problems making things run, stop and ask for help. }
+\end{itemize}
+\end{frame}
+
+
+\section{Syntax}
+
+\begin{frame}[fragile]{Some Simple Syntax}
+\begin{itemize}
+    \item Ruby uses \T{\#} for comments; Haskell uses \T{-{-}}, as
+        below.
+    \item (Haskell also offers nesting open/close comment delimiters
+        that may span multiple lines, \T{\{- like this -\}}.)
+    \item Basic constant expressions in Haskell are awfully similar
+        to those in Ruby:
+        \begin{hlisting}
+            2           -- integer
+            3.1415      -- floating point number
+            [1,2,3]     -- list of integers
+            'x'         -- character (a type Ruby doesn't have)
+            "Hello."    -- list of characters, or string
+        \end{hlisting}
+    \item Expressions with binary operators are pretty much the same,
+        though the particular operators are sometimes different:
+        \begin{hlisting}
+            2 + 3                   ¦\lO{=> 5}¦
+            2 * (3 + 4)             ¦\lO{=> 14}¦
+            [1,2] ++ [3,4]          ¦\lO{=> [1,2,3,4]}¦
+            "Hello, " ++ "world."   ¦\lO{=> "Hello, world."}¦
+        \end{hlisting}
+    \note{ \T{++} is the list concatenation operator in Haskell. Why do
+        we use it for strings? Because a \T{String} is just a list of
+        characters, of course! }
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Calling Functions}
+\begin{itemize}
+    \item In Ruby we can call functions with or without parens around
+        the arguments, which are separated by commas.
+        \begin{olisting}
+            irb> ¦\lR{printf("\%.3f{\B}n", 3.1415/2)}¦
+            1.571
+            => nil
+            irb> ¦\lR{printf "\%.3f{\B}n", 3.1415/2}¦
+            1.571
+            => nil
+        \end{olisting}
+    \item In Haskell, we never use parens for functions calls, and we
+        use just space to separate the arguments:
+        \begin{olisting}
+            Prelude> ¦\lH{import Text.Printf}¦
+            Prelude Text.Printf> ¦\lH{printf "\%.3f{\B}n" (3.14159/2)}¦
+            1.571
+        \end{olisting}
+    \item Note the parens we need around the \T{3.14159/2} expresssion
+        to make it a single argument, due to the precedence rules.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Infix Functions}
+\begin{itemize}
+    \item Two-arugment functions whose names are punctuation are
+        \emph{infix} functions, and are used between their arguments:
+        \begin{olisting}
+            Prelude> ¦\lH{3.14159 / 2}¦
+            1.570795
+        \end{olisting}
+    \item But these are actually just normal functions, and can be
+        applied in prefix form as well:
+        \begin{olisting}
+            Prelude> ¦\lH{(/) 3.14159 2}¦
+            1.570795
+        \end{olisting}
+    \item We can also apply non-punctuation functions that take two
+        arguments in infix form:
+        \begin{olisting}
+            Prelude> ¦\lH{15 `mod` 4}¦
+            3
+        \end{olisting}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Defining Variables}
+\begin{itemize}
+    \item \T{name = value}; how simple can it get? Only, if we're using
+        the GHC interpreter, we need to prefix the definition with
+        \T{let} for reasons that will remain mysterious for the course
+        of this presentation.
+    \note[item]{
+        The reason for the use of \T{let} is that in the GHC interpreter
+        we're operating in an evaluation environment, just as Ruby is
+        all the time. (``\T{def f n; n + 1; end}'' is actually code that's
+        executed as it's read in Ruby.) But a Haskell program in a
+        file is a list of definitions that's usually compiled; only
+        when we run the Haskell program do we start evaluating those
+        definitions.
+        }
+        \begin{olisting}
+            irb> ¦\lRF{x = 3}¦   Prelude> ¦\lH{let x = 3}¦
+            => 3
+            irb> ¦\lRF{x + 1}¦   Prelude> ¦\lH{x + 1}¦
+            => 4                 4
+        \end{olisting}
+    \note[item]{
+        Here we show the Ruby code (and results) on the left and the
+        equivalent Haskell on the right, leaving blank lines where the
+        Haskell interpreter prints no output. You'll note that here our
+        definition was merely accepted, not evaluated.
+        }
+    \item Variables in Haskell are "single-assignment"; once defined in
+        a scope, you cannot define it a second time in the same scope.
+    \item \T{x = x + 1} is nonsensical mathematically and evaluates
+        as an infinite recursion Haskell.
+        \begin{olisting}
+            ¦\lH{x = 1 + x}¦
+              = 1 + (1 + x)         -- Substituting the
+              = 1 + (1 + (1 + x))   -- definition of 'x'
+              = ...
+        \end{olisting}
+    \note[item]{ In \T{ghci} you can re-define variables:
+        \T{let x = 2} followed by \T{let x = 3} will work. This is
+        because each \T{let} creates a new (sub-)environment, so the
+        second definition will shadow the first.
+        }
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Defining Functions}
+\begin{itemize}
+    \item Functions are defined as we do in math, but, as with function
+        calls, without the parens.
+        \begin{olisting}
+            irb> ¦\lR{def add x, y}¦   Prelude> ¦\lH{let add x y = x + y}¦
+            irb>     ¦\lR{x + y}¦
+            irb> ¦\lR{end}¦
+            => nil
+            irb> ¦\lR{add 2, 3}¦       Prelude> ¦\lH{add 2 3}¦
+            => 5                5
+        \end{olisting}
+    \item The syntax seems simpler than Ruby, doesn't it?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Function or Variable?}
+\begin{itemize}
+    \item<1-> But wait, function definitions and variable definitions look
+        awfully similar:
+        \begin{hlisting}
+            f x = 7         -- The 'x' argument is ignored.
+            g   = 7
+        \end{hlisting}
+    \item<2-> Is \T{g} a variable or a function with no arguments?
+    \item<3-> Like Ruby, it mostly doesn't matter; often functions look
+        like variables and you can use them as such.
+    \note<5>[item]{ Ruby uses syntatic sugar to make things like \T{o.x = 1}
+        be read as a function call if \T{o} has an \T{x=(val)} method
+        on it. Syntactic sugar is generally considered a hack, albeit
+        in many circumstances more welcome than its lack.
+        }
+    \item<4-> Unlike Ruby, it \emph{really} doesn't matter: there is
+        no difference!
+    \item<5->You can think of ``variables'' as functions with no arguments,
+        if you like.
+    \item<5->But really, all functions are stored in variables, just like
+        any other objects.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{More Complex Expressions}
+\begin{itemize}
+    \item In Ruby (think \T{collect} instead of \T{map} if you're
+        Smalltalk-oriented):
+        \begin{rlisting}
+            (0..7).map { |x| x*3+1 } .select { |x| x.even? }
+            ¦\lO{=> [4, 10, 16, 22]}¦
+        \end{rlisting}
+    \item In Haskell we prefix things, so the ``flow'' runs the other
+        way around:
+        \begin{hlisting}
+            filter (\x -> even x) (map (\x -> x*3+1) [0..7])
+            ¦\lO{[4,10,16,22]}¦
+        \end{hlisting}
+    \note[item]{ Here we apply filter to two arguments. The first is
+        the selector function for the filter. The second is the result
+        of the application of \T{map} to its two arguments.
+        }
+    \item Haskell's \T{{\B}x -> ...} is lambda syntax, similar to Ruby:
+        \begin{rlisting}
+            f = lambda { |x| x + 1 }     # Ruby
+            ¦\lH{f = {\B}x -> x + 1}¦             ¦\lH{\HH Haskell}¦
+        \end{rlisting}
+\end{itemize}
+\end{frame}
+
+
+\section{Functions as First-class Values}
+
+\subsection{Lambdas}
+
+\begin{frame}[fragile]{Using (or Not Using) Lambdas I}
+\begin{itemize}
+    \item But hang on! In the last slide we used a lambda for the
+        paramter to \T{filter} in Haskell, but not in Ruby:
+        \begin{rlisting}
+            (0..7).select { |x| x.even? }
+            ¦\lH{filter ({\B}x -> even x) [0..7]}¦
+        \end{rlisting}
+    \item Well, we could use a lambda in Ruby, but that's even more verbose.
+        \begin{rlisting}
+            (0..7).select(&lambda { |x| x.even? })
+        \end{rlisting}
+    \item And we don't like verbosity and extra punctuation, do we?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Using (or Not Using) Lambdas II}
+\begin{itemize}
+    \item We don't like verbosity and extra punctuation.
+        So in Haskell we don't use lambdas so often.
+    \item Instead, we get even simpler than Ruby, and just pass the
+        function itself:
+        \begin{hlisting}
+            filter even [0..7]
+        \end{hlisting}
+    \item This uses no syntactic sugar! (Because variables hold functions.)
+    \item Ruby's prefix notation and syntactic sugar for blocks end up
+        adding complexity and extra characters to simple things.
+        \begin{rlisting}
+            (0..7).select(even?)           # Doesn't work in Ruby.
+            (0..7).select { |x| x.even? }  # Sigh.
+        \end{rlisting}
+\end{itemize}
+\end{frame}
+
+
+\subsection{First Class Values}
+
+\begin{frame}[fragile]{First Class Values}
+\begin{itemize}
+    \item Every language has "first class" values, which are, roughly,
+        the ones that variables can hold.
+    \item In languages like C, variables hold simple values but not
+        complex ones:
+        \begin{olisting}
+            int i = 7;
+            double x = 3.1459;
+
+            char s[] = "Hello.";     // s is a pointer to a string
+            int (*f)(int, int) = ... // f is a pointer to a function
+        \end{olisting}
+    \item In C, strings and functions are not first-class values.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{First Class Values in Ruby}
+\begin{itemize}
+    \item In Ruby the following are all treated the same:
+        \begin{rlisting}
+            3           # FixNum object
+            "foo"       # String object
+            [1,2,3]     # Array object
+            Array       # Class object
+            o           # object of arbitrary user-created class
+        \end{rlisting}
+    \item All of these are easily used in the same simple way:
+        \begin{rlisting}
+            def f x; ...; end
+            f 3
+            f "foo"
+            f [1,2,3]
+            f Array
+            f o
+        \end{rlisting}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Functions as First Class Values}
+\begin{itemize}
+    \item A functional programming key point: treat functions as
+        ordinary (or "first class") objects or values, no differently
+        from integers, strings, lists or programmer-defined types.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Functions as First Class Values in Ruby}
+\begin{itemize}
+    \item Functions are not consistently first-class in Ruby.
+        ``Ordinary'' functions are not stored in variables:
+        \begin{rlisting}
+            def inc_f x
+                x + 1
+            end
+            inc_f 3                     # => 4
+
+            [1, 2].map inc_f            # These don't work!
+            f2 = inc_f; f2 3            # inc_f is not a variable.
+        \end{rlisting}
+    \item We have to do special things to put a function in a variable:
+        \begin{rlisting}
+            inc_l = lambda { |x| inc_f(x) }
+        \end{rlisting}
+    \item And then we have to use it differently.
+        \begin{rlisting}
+            inc_l 3                     # Doesn't work!
+            inc_l.call 3                # => 4
+            [1, 2].map inc_l            # Doesn't work!
+            [1, 2].map &inc_l           # => [2, 3]
+        \end{rlisting}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Functions as First Class Values in Haskell}
+\begin{itemize}
+    \item In Haskell, as we've already seen, variables hold functions.
+        So it's all very simple.
+    \item In Haskell, given this:
+        \begin{hlisting}
+            filter (\x -> x > 2) [0..6]
+        \end{hlisting}
+    \item We can apply the standard "extract variable" refactoring:
+        \begin{hlisting}
+            f = \x -> x > 2     -- Prefix with 'let' in ghci.
+            filter f [0..6]
+        \end{hlisting}
+    \item Or, more simply:
+        \begin{hlisting}
+            f x = x > 2         -- Prefix with 'let' in ghci.
+            filter f [0..6]
+        \end{hlisting}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Side Note: Ruby Gets Weirder}
+\begin{itemize}
+    \item Ruby has "lambdas" and "procs," and they're not the same
+        thing, though they look awfully similar!
+        \begin{rlisting}
+            def call_lambda
+                f = lambda { return; };     puts(f.class)
+                f.call;                     puts("Printed!")
+            end
+            call_lambda  # Prints "Proc" followed by "Printed!"
+
+            def call_proc
+                f = Proc.new { return; };   puts(f.class)
+                f.call;                     puts("Not printed!")
+            end
+            call_proc    # Prints just "Proc"!
+        \end{rlisting}
+    \item More scary details at:
+        \begin{olisting}
+            http://www.skorks.com/2010/05/ruby-procs-and-lambdas-
+              and-the-difference-between-them/
+        \end{olisting}
+\end{itemize}
+\end{frame}
+\note[enumerate]{
+    \item Both \T{lambda} and \T{proc} produce \T{Proc} objects, but
+        these two different types of \T{Proc} objects that behave
+        differently when called, as demonstrated above. In Ruby 1.8 it
+        doesn't appear to be possible to tell the difference between the
+        two; Ruby 1.9 adds a \T{lambda?} method to the \T{Proc} class.
+    \item This is actually rather typical of the mess Ruby often makes
+        when it could be doing things in a much simpler and more
+        consistent way. Functional languages tend to do a lot better,
+        even at just the syntax level. (For whatever reason, functional
+        languages tend to have simpler syntax than not only Ruby but
+        even languages such as Java or Javascript.)
+}
+
+
+\begin{frame}[fragile]{But in Ruby the Idea's There}
+\begin{itemize}
+    \item Though not all functions/blocks/whatever are first-class,
+        some are, and we do use them in the way that functional
+        programmers do.
+    \item So some functional programming ideas are also present in Ruby.
+    \item This is not really a suprise, given that Matz says that he
+        started with Lisp and threw in ideas from Smalltalk, which is
+        itself quite functional (unlike most subsequent OO languages).
+    \item "Let's call it MatzLisp from now on. ;-)"
+        \begin{olisting}
+            http://blade.nagaokaut.ac.jp/cgi-bin/
+              scat.rb/ruby/ruby-talk/179642
+        \end{olisting}
+\end{itemize}
+\end{frame}
+
+
+\section{From Fragments to Programs}
+
+\subsection{Using the Compiler}
+
+\begin{frame}[fragile]{Using the Compiler}
+\begin{itemize}
+    \item We're now going to move on from the interpreter to executing
+        programs from files.
+    \item In the git repo, we have a simple \T{Main.hs}:
+        \begin{hlisting}
+            main = putStrLn "Hello, world."
+        \end{hlisting}
+    \item We can compile it by passing it to GHC, producing a standard
+        binary program that we can run:
+        \begin{olisting}
+            $ ¦\lS{ghc Main.hs}¦
+            [1 of 1] Compiling Main     ( Main.hs, Main.o )
+            Linking Main ...
+            $ ¦\lS{file Main}¦
+            Main: ELF 32-bit LSB executable, Intel 80386...
+            $ ¦\lS{./Main}¦
+            Hello, world.
+        \end{olisting}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Using the Load-and-go Compiler}
+\begin{itemize}
+    \item But for our purposes, the \T{runghc} "compile and go" program is
+        faster and easier:
+        \begin{olisting}
+            $ ¦\lS{runghc Main.hs}¦
+            Hello, world.
+        \end{olisting}
+    \item Or sometimes, even, the interpreter, with definitions loaded
+        from a file:
+        \begin{olisting}
+            $ ¦\lS{ghci -v0 Main.hs}¦
+            *Main> ¦\lH{main}¦
+            Hello, world.
+            *Main>
+        \end{olisting}
+\end{itemize}
+\end{frame}
+
+
+\subsection{Order Dependencies}
+
+\begin{frame}[fragile]{Sequencing Commands I}
+\begin{itemize}
+    \item \T{putStrLn} is not actually a regular function, becuase
+        it's ``impure'' rather than ``pure'': that is, its effect is
+        different depending on where and when you execute it. We often
+        call these impure functions, ``commands.''
+    \item Let's sequence a pair of commands using the \T{do} control
+        structure to show the difference.
+        \begin{hlisting}
+            main = do { putStrLn "abc"; putStrLn "def" }
+        \end{hlisting}
+        This prints ``abc'' on one line, and ``def'' on the next.
+    \item If we reverse them, the program produces a different result:
+        \begin{hlisting}
+            main = do { putStrLn "def"; putStrLn "abc" }
+        \end{hlisting}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{When Order Is and Isn't Important}
+\begin{itemize}
+    \item That these are two different things may seem obvious:
+        \begin{hlisting}
+            ad = do { putStrLn "abc"; putStrLn "def" }
+            da = do { putStrLn "def"; putStrLn "abc" }
+        \end{hlisting}
+    \item But consider that with pure functions, we neither need nor
+        want them to be order-dependent. In Haskell (though not in Ruby),
+        these two programs should produce the same result!
+        \begin{hlisting}
+            twice s = s ++ s
+            main = putStrLn (twice "abc")
+        \end{hlisting}
+        \begin{hlisting}
+            main = putStrLn (twice "abc")
+            twice s = s ++ s
+        \end{hlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Order Dependency Makes Ruby Difficult}
+\begin{itemize}
+    \item Allowing much of your code not to have order dependencies makes
+        analysis of it easier.
+    \item This Ruby code is hard to understand and debug:
+        \begin{rlisting}
+            def f; 42; end
+            ¦\lO{\# ... hundreds of lines of code here ... }¦
+            g(f)
+            ¦\lO{\# ... hundreds more lines of code here ... }¦
+            def f; 84; end
+            ¦\lO{\# ... and yet hundreds more lines of code here ... }¦
+            g(f)
+        \end{rlisting}
+    \item In the two uses of \T{g(f)}, it can be difficult to figure out
+        which \T{f} is being used.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Lack of Order Dependency Makes Haskell Easy}
+\begin{itemize}
+    \item In Haskell, without order dependency issues, we merely need to
+        look at the nearest scope with the definition.
+        \begin{hlisting}
+            x   = 100
+            f   = x + 1
+            g x = x + 1
+            h   =  let x = 300  -- "local variable"
+                    in x + 1
+        \end{hlisting}
+    \item Load up this example file in the interpreter and see what
+        evaluating the various definitions gives you:
+        \begin{olisting}
+            $ ¦\lS{ghci -v0 ex/01\_defs.hs}¦
+            Prelude> ¦\lH{g 200}¦
+            201
+        \end{olisting}
+    \item For any use of \T{x}, it's easy to find its definition.
+\end{itemize}
+\end{frame}
+\note[enumerate]{
+    \item There's a parallel here between Ruby and Haskell and dynamically
+        scoped (e.g., Emacs Lisp) and lexically scoped (e.g., Scheme)
+        languages. It's all about how much you need to remember about the
+        current environment when examining an evaluation.
+}
+
+
+\begin{frame}[fragile]{Sequencing Commands II}
+\begin{itemize}
+    \item The compiler knows which functions are order-dependent and
+        which are not, and will tell us if we use either type in the wrong way.
+        \begin{hlisting}
+            main =  do { putStrLn "abc"; reverse "def" }
+        \end{hlisting}
+        \begin{olisting}
+            Main.hs:1:30:
+                Couldn't match expected type `IO b0' with
+                    actual type `[a0]'
+                In the return type of a call of `reverse'
+                ...
+        \end{olisting}
+    \item Many languages, including Ruby, sequence \emph{everything},
+        forcing you to choose an order even when you don't want to.
+    \item As a fish in water, I bet you never realized that putting one
+        line after another in Ruby is a control structure!
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{More Syntax, But Actually Less}
+\begin{itemize}
+    \item You probably noticed the grouping braces and semicolon
+        statement separators appearing in our last example:
+        \begin{hlisting}
+            main = do { putStrLn "abc"; putStrLn "def" }
+        \end{hlisting}
+    \item Like Python, you can leave these out and Haskell will insert
+        them automatically if you use the obvious indentation:
+        \begin{hlisting}
+            main =
+                 do putStrLn "abc"
+                    putStrLn "def"
+        \end{hlisting}
+    \item This is a bit more powerful than Ruby because it considers
+        syntax after newlines:
+        \begin{rlisting}
+            s  = "abc"
+               + "def"       # Not valid ruby
+            ¦\lH{s { }= "abc"}¦
+              ¦\lH{++ "def}¦       ¦\lH{\HH But ok in Haskell}¦
+        \end{rlisting}
+\end{itemize}
+\end{frame}
+
+
+\subsection{Printing Non-String Values}
+
+\begin{frame}[fragile]{Printing Non-String Values}
+\begin{itemize}
+    \item Let's go back to our old Main.hs (\T{git checkout Main.hs}) and
+        print a non-string value:
+        \begin{hlisting}
+            main = putStrLn 3.14159
+        \end{hlisting}
+    \item This gives us a error, because \T{3.14159} isn't a \T{String}.
+        We need something like Ruby's \T{inspect}, which in Haskell is
+        the \T{show} function:
+        \begin{hlisting}
+            main = putStrLn (show 3.14159)
+        \end{hlisting}
+    \item Much like Ruby's \T{p} function, we have \T{print}, which
+        combines \T{show} and \T{putStrLn}:
+        \begin{hlisting}
+            main = print 3.14159
+        \end{hlisting}
+    \item \T{show} (and thus \T{print}) works for many non-String values,
+        and of course you can write your own routines for your own data
+        types. You can even ask the compiler to write them for you
+        automatically.
+\end{itemize}
+\end{frame}
+
+
+\section{Iterating}
+
+\begin{frame}[fragile]{Functions that Iterate}
+\begin{itemize}
+    \item In the comparisions of Ruby and Haskell code in previous slides,
+        we've seen iteration done in both with \T{map} and similar functions:
+        \begin{rlisting}
+            (0..7).map { |x| x*3+1 } .select { |x| x.even? }
+            ¦\lH{filter even (map ({\B}x -> x*3+1) [0..7])}¦
+        \end{rlisting}
+    \item This is the most frequent way of iterating over data structures,
+        both in Haskell and for many Ruby programmers.
+    \item \T{inejct} is less commonly in Ruby, but its Haskell equivalant,
+        \T{fold}, is very common. To sum a list of numbers:
+        \begin{rlisting}
+            [1,3,5,7].inject(0) { |acc, x| x + acc }
+            ¦\lH{foldr ({\B}x acc -> x + acc) 0 [1,3,5,7]}¦
+        \end{rlisting}
+    \item (Here we won't get into the difference between left fold, \T{foldl}
+        and right fold, \T{foldr}.)
+\end{itemize}
+\end{frame}
+
+
+\subsection{Recursion}
+
+\begin{frame}[fragile]{Recursion}
+\begin{itemize}
+    \item When we roll our own iteration, as with most functional languages,
+        in Haskell we use recursion.
+    \item Due to tail call optimization, this is very efficient and doesn't
+        grow the stack.
+    \item In Ruby, we're often forced to use \T{for} and \T{while} loops
+        due to the lack of tail call optimization.
+    \item Haskell doesn't even have syntatic \T{for} and \T{while}, though
+        there are some \T{for} functions, and you could write a \T{while}
+        function easily enough.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Recursion Example}
+\begin{itemize}
+    \item Let's find the first item on a list satisfying a predicate.
+        \begin{hlisting}
+            find p xs =
+                if p (head xs) then (head xs)
+                               else find p (tail xs)
+
+            main = print (find (\x -> x > 3) [1,2,3,4,5])
+        \end{hlisting}
+    \item Try \T{\lS{runghc ex/02\_find.hs}}
+    \item Change \T{\lH{x > 3}} to \T{\lH{x > 7}} and try running it again.
+        We get
+        \begin{olisting}
+            02_find.hs: Prelude.head: empty list
+        \end{olisting}
+        because \T{head} is undefined for empty lists. We'll later see
+        some better ways of dealing with this.
+\end{itemize}
+\end{frame}
+
+
+\section{Pattern Matching}
+
+\begin{frame}[fragile]{Pattern Matching}
+\begin{itemize}
+    \item The previous example is not the normal way we'd write this
+        in Haskell.
+    \item There's a much nicer way of building our \T{find} function that
+        avoids calling functions to take apart data structures and \T{if}
+        statements to do different things based on the result.
+    \item Instead we use \emph{pattern matching}:
+        \begin{hlisting}
+            find p (x:xs) =
+                if p x then x
+                       else find p xs
+        \end{hlisting}
+    \item Ruby doesn't have real pattern matching, though it sometimes
+        fakes a limited version of it with regular expressions in
+        \T{switch} statements.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{How Does Pattern Matching Work?}
+\begin{itemize}
+    \item Let's see how this worked:
+        \begin{hlisting}
+            find p (x:xs) = if p x then x else find p xs
+        \end{hlisting}
+    \item \T{\lH{:}} is the operator we use to prepend (cons) an element on to
+        a list, constructing a new list:
+        \begin{olisting}
+            Prelude> ¦\lH{2:1:[]}¦
+            [2,1]
+            Prelude> ¦\lH{3:[2,1]}¦
+            [3,2,1]
+        \end{olisting}
+    \item The pattern \T{\lH{x:xs}} above does the reverse operation,
+        deconstructing the components of the list in to the given variables.
+        The head goes in to \T{x} and the tail in to \T{xs}.
+    \item This is not special compiler support for the list constructor;
+        this works on all user-defined data types.
+    \item We use this a \emph{lot}.
+    \note[item]{ Programmers who use languages with pattern matching not only
+        use it a lot, but also tend to look with pity on those without it.
+        It's one of those ``blub'' things where you just can't imagine
+        living without it once you've used it. }
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Guards}
+\begin{itemize}
+    \item There's another bit of syntax, \emph{guards}, we can use to
+        make things look even nicer:
+        \begin{hlisting}
+            find p (x:xs) | p x       = x
+                          | otherwise = find p xs
+        \end{hlisting}
+    \item This is similar to the mathematical notation for functions
+        with alternatives depending on the input:\\
+            \quad\\
+            \quad $f(n) = \left\{
+                \begin{array}{l l}
+                    n / 2     & \quad \text{if $n$ is even}\\
+                    -(n+1)/2   & \quad \text{if $n$ is odd}
+                \end{array}
+            \right.$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{The Missing Pattern}
+\begin{itemize}
+    \item But with our new pattern-matching and guarded code:
+        \begin{hlisting}
+            find p (x:xs) | p x       = x
+                          | otherwise = find p xs
+
+            main = print (find (\x -> x > 7) [1,2,3,4,5])
+        \end{hlisting}
+    \item We're still getting a pesky error when we pass find an empty list:
+        \begin{olisting}
+            $ ¦\lS{runghc 03\_find.hs}¦
+            03_find.hs: ex/03_find.hs:(3,1)-(4,37):
+                Non-exhaustive patterns in function find
+        \end{olisting}
+    \item That missing pattern is the empty list pattern. We need to
+        add a definition of our function to match that one as well:
+        \begin{hlisting}
+            find p [] = ¦\lO{...}¦
+        \end{hlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The Missing Pattern Found}
+\begin{itemize}
+    \item Though it's not much different from what's happening anyway,
+        let's make \T{find} throw an exception with a better error
+        message on failure.
+        \begin{hlisting}
+            import Control.Exception
+
+            find _ [] = throw (PatternMatchFail "Not found.")
+            find p (x:xs) | p x       = x
+                          | otherwise = find p xs
+
+            main = print (find (\x -> x > 7) [1,2,3,4,5])
+        \end{hlisting}
+    \note[item]{ There are better ways of handing this than throwing an
+        exception at runtime, in particular, informing the programmer
+        at compile time that he needs to deal with this potential error
+        condition. We'll see how this is done later on. }
+    \item We can have multiple definitions of a function so long as their
+        patterns don't overlap. The first definition with a matching
+        pattern is used.
+    \note[item]{ The observant among you will note that chosing the first
+        matching definition of multiple definitions breaks the ``order
+        doesn't matter'' rule. Well, nobody's perfect. }
+    \item The underscore as the pattern for the first argument matches
+        anything, and says that we're ignoring it.
+\end{itemize}
+\end{frame}
+
+
+\section{The Type System}
+
+\begin{frame}[fragile]{The Type System}
+\begin{itemize}
+    \item So far, we've seen what you might call the run-time language
+        of Haskell. But there's another whole language that we've not
+        yet even touched on: the type system.
+    \item The type system lanauge (in its basic form) is not as powerful
+         as the run time language, but it's an extremely important part
+         of Haskell, and the source of much of its power.
+    \item The type system language is ``run'' at compile time, and has
+        finished execution by the time your program is compiled.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Type-checking Advantages: Better than Testing}
+\begin{itemize}
+    \item The type system, when used well, will find many errors that
+        would be found through testing in other languages.
+    \item But it's actually better than testing:
+        \begin{itemize}
+            \item Testing shows that (some) things work.
+            \item Type checking shows that things cannot fail.
+        \end{itemize}
+    \item As Edsger Dijkstra has said:\\
+        \begin{quote}
+        The first moral of the story is that program testing can be used very
+        effectively to show the presence of bugs but never to show their
+        absence.
+        \end{quote}
+    \item One way of looking at it is that it lets you \emph{prove} your
+        code has no errors.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Effect of Type Checking on Unit Testing}
+\begin{itemize}
+    \item You need to do much less tedious unit testing.
+    \begin{itemize}
+    \item Non-trivial Ruby project (3000-5000 LOC)
+        \begin{itemize}
+        \item about 40\% test code.
+        \end{itemize}
+    \item Non-trivial Haskell project (>10,000 LOC)
+        \begin{itemize}
+        \item less than 10\% test code.
+        \item Probably even less had I known Haskell well from the start.
+        \end{itemize}
+    \end{itemize}
+    \item Sometimes you're more quickly led to a good solution than you
+        are with TDD.
+    \item Just as it takes time to learn to use unit testing,
+        it takes time to learn to program with type checking.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Type-checking Advantages: Efficiency}
+\begin{itemize}
+    \item A type-checked program can be more efficient at run-time
+        because it can do work at compile time to avoid run-time checks.
+    \item Consider: in Ruby, a function's parameter can be any object
+        (in this sense, variables are untyped), and so an object must
+        be queried at run time to see if it supports an operation.
+    \note[item]{ The run-time type query may be automatic, as when you
+        attempt to call a method on an object, or done by the programmer,
+        as when you query an object with \T{respond\_to?}.
+        }
+    \item If the check has been done at compile time, we know at run
+        time what the object must be, because the compiler guarantees
+        it.
+    \item We can sometimes use a (more efficient) wider type at runtime
+        knowing some values will not be present, e.g., a signed int that
+        holds a smaller range of unsigned values (e.g., an enumeration).
+        This is known as \emph{type erasure}.
+\end{itemize}
+\end{frame}
+
+
+\subsection{Data Types}
+
+\begin{frame}[fragile]{Enumerated Data Types}
+\begin{itemize}
+    \item The simplest data type is a straight enumeration of all values
+        that inhabit the type, as we see in our first example of the
+        type-level language:
+        \begin{hlisting}
+            ¦\lT{data Color = Red | Green | Blue}¦
+        \end{hlisting}
+    \item This declares a new type named \T{Color}. Type names start
+        with a capital letter.
+    \item \T{Red}, \T{Green} and \T{Blue} are \emph{constructors}.
+    \item Constructors are declared in the type language but used in
+        the run-time language, and so start with a capital letter to
+        distinguish them from variables.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Using Constructors}
+\begin{itemize}
+    \item Given our data type, we use the constructors in the run-time
+        laguage both to construct values of that type and in patterns
+        that match these values:
+        \begin{hlisting}
+            ¦\lT{data Color = Red | Green | Blue}¦
+
+            main = print (aoi Green)    -- construction
+
+            aoi Red   = False           -- pattern matching
+            aoi Green = True
+            aoi Blue  = True
+        \end{hlisting}
+    \item Running this program, \T{04\_colors.hs}, will print \T{True}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Type Inference}
+\begin{itemize}
+    \item In the previous example, we didn't explicitly tell the compiler
+        the type of the \T{\lH{aoi}} function; it looked at the code
+        and \emph{inferred} it.
+    \item All this time we've actually been using compile-time
+        (``static'') type checking, though you may not have noticed this.
+    \item Type inference brings a lot of the convenience of dynamically
+        typed langauges without the overhead (delayed checks, run-time
+        cost) of run-time type checking.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Type Declarations}
+\begin{itemize}
+    \item But often we want to declare our types, either to avoid
+        ambiguity and confusion or because we trust ourselves to write
+        the type more reliably than we can write the code.
+    \item In \T{ex/05\_typedecl.hs} we have our first examples of this:
+        \begin{hlisting}
+            ¦\lT{go :: Color}¦
+            go = Green
+
+            ¦\lT{aoi :: Color -> Bool}¦
+            aoi Red   = False
+            aoi Green = True
+            aoi Blue  = True
+        \end{hlisting}
+    \note[item]{ In \T{ex/05\_typedecl.hs} we add a \T{\lT{deriving}}
+        statement to the type declaration. This asks the compiler to
+        automatically write a \T{\lH{show}} function for us that can
+        generate strings representing the values of the type.
+        }
+    \item The first declaration says, ``\T{go} is bound to a value of type
+        \T{Color}.''
+    \item The second, ``\T{aoi} is bound to a function that, when
+        applied to a value of type \T{Color}, \ evaluates to a value of
+        type \T{Bool}.''
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{The Type of Multi-argument Functions I}
+\begin{itemize}
+    \item Of course, we can have functions with more than one argument:
+        \begin{hlisting}
+            ¦\lT{matching :: Color -> Color -> Bool}¦
+            matching c1 c2
+                | aoi c1    = aoi c2
+                | otherwise = not (aoi c2)
+        \end{hlisting}
+    \item We can read this as, ``\T{matching} is bound to a function
+        that, when applied to two arguments of type \T{Color} evaluates
+        too a value of type \T{Bool}.
+    \item<2-> But wait! Those two arrows look the same. Something's
+        funny here...
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{The Type of Multi-argument Functions II}
+\begin{itemize}
+    \item When we look at this declaration:
+        \begin{hlisting}
+            ¦\lT{matching :: Color -> Color -> Bool}¦
+        \end{hlisting}
+    \item Is this:
+        \begin{itemize}
+            \item a function that takes two \T{Color}s and returns a
+                \T{Bool}, or
+            \item a function that takes one \T{Color} and returns another
+                function, which takes a \T{Color} and returns a \T{Bool}?
+        \end{itemize}
+    \item<2->Answer: Both! (But really, the first.)
+\end{itemize}
+\end{frame}
+
+
+\subsection{Partial Application}
+
+\begin{frame}[fragile]{Partial Application}
+\begin{itemize}
+    \item Functions in Haskell are normally in \emph{curried} form:
+        \begin{hlisting}
+            ¦\lT{matching :: Color -> Color -> Bool}¦
+        \end{hlisting}
+    \item This allows \emph{partial application}
+        \begin{hlisting}
+            -- partial application
+            ¦\lT{matchingBlue :: Color -> Bool}¦
+            matchingBlue = matching Blue
+
+            -- completed application
+            ¦\lT{matchingBlueGreen :: Bool}¦
+            matchingBlueGreen = matchingBlue Green
+        \end{hlisting}
+    \item We use this a lot, too. Remember our \T{\lH{find}} function?
+        \begin{hlisting}
+            find (matching Blue) [Red, Green, Red, Blue]
+        \end{hlisting}
+    \item We can do partial application of infix functions as well:
+        \begin{hlisting}
+            find (>3) [1,2,3,4,5]
+        \end{hlisting}
+\end{itemize}
+\end{frame}
+
+\subsection{Point-free Style}
+
+\begin{frame}[fragile]{Point-free Style}
+\begin{itemize}
+    \item In the previous slide, we didn't use an explicit parameter
+        like this:
+        \begin{hlisting}
+            ¦\lT{matchingBlue :: Color -> Bool}¦
+            matchingBlue c = matching Blue c
+        \end{hlisting}
+    \note[item]{
+        In the previous slide, you'll notice that we could have used
+        an explicit parameter with our partial application bound to
+        \T{matchingBlue}. }
+    \item But no need for the syntax: functions are first-class values.
+    \note[item]{ Since we can treat functions just like any other object,
+        there's no need to use syntax to indicate the as-yet unused
+        arguments for these unapplied or partially applied functions. }
+    \item Just as these are algebraically equivalent:
+        \begin{figure}
+            \hspace{-6cm} $ f(x) = g(x) $\\
+            \hspace{-6cm} $ f = g $
+        \end{figure}
+        so is this to the above:
+        \begin{hlisting}
+            matchingBlue = matching Blue
+        \end{hlisting}
+    \item This is referred to as \emph{point-free} (or \emph{tacit})  style.
+    \note[item]{ The term \emph{point-free} originated in topology,
+        a branch of mathematics which works with spaces composed of
+        points, and functions between those spaces. So a `points-free'
+        definition of a function is one which does not explicitly
+        mention the points (values) of the space on which the function
+        acts. }
+    \item Point-free style moves the focus from the \emph{data} to the
+        \emph{functions}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{The Point of Point-free Style}
+\begin{itemize}
+    \item First, a bonus function: \T{.} for function composition. Just
+        as in math $ (f{\cdot}g)(x) = f(g(x)) $, in Haskell:
+        \begin{hlisting}
+            (f.g) x == f (g x)
+        \end{hlisting}
+    \pause
+    \item Point-free style is more concise and, once you're used to it,
+        often more clear.
+        \begin{hlisting}
+            sum = foldr (+) 0  ¦\lO{$vs.$}¦  sum xs = foldr (+) 0 xs
+        \end{hlisting}
+    \pause
+        \vspace{-6pt} \begin{hlisting}
+            fn = f . g . h     ¦\lO{$vs.$}¦  fn x = f (g (h x))
+        \end{hlisting}
+    \pause
+        \vspace{-6pt} \begin{hlisting}
+            membr = any.(==)   ¦\lO{$vs.$}¦  membr x lst = any (==x) lst
+        \end{hlisting}
+    \pause
+    \item Intermediate form of \T{\lH{membr}}:
+        \begin{hlisting}
+            membr x = any (==x)
+        \end{hlisting}
+\end{itemize}
+\end{frame}
+\note[enumerate]{
+    \item \T{f.g} of course means something quite different
+        in Ruby, and it make take a while to re-orient how you read it
+        to its meaning in Haskell. If it helps, add some spaces: \T{f . g}.
+    \item That last one might be difficult for the
+        uninitiated. An intermediate form, after we've applied \T{(==)}
+        to the first argument, and \T{any} to the function resulting
+        from that, is \T{membr x = any (==x)}. But you probably need to
+        take some time work through this carefully yourself.
+    \item GHC can't automtaically infer the type of that last
+        definition, so if you want to play with it you'll need to
+        annotate it:\\
+            \quad \T{membr :: Eq a => a -> [a] -> Bool}\\
+            \quad \T{membr = any . (==)}\\
+}
+
+\begin{frame}[fragile]{Use of Point-free Style}
+\begin{itemize}
+    \item Frequently used in Haskell due to concision and clarity.
+    \item Especially good for combinator libraries (a cool DSL
+        technique we unfortunately don't have time to discuss).
+    \item Point-free style can also turn into a confusing mess.
+    \item Use judgement and taste.
+\end{itemize}
+\end{frame}
+
+
+\subsection{Algebraic Data Types}
+
+\begin{frame}[fragile]{Type Constructor Parameters I}
+\begin{itemize}
+    \item As with constructors in Ruby, type constructors in Haskell can
+        take parameters for the specific data that they ``store'', and
+        we typically extract these values by deconstructing via pattern
+        matching. \T{06\_Length.hs}:
+        \begin{hlisting}
+            ¦\lT{data Length = Length Int}¦
+
+            ¦\lT{(|+|) :: Length -> Length -> Length}¦
+            Length x |+| Length y = Length (x+y)
+
+            main = print $ Length 3 |+| Length 7
+        \end{hlisting}
+    \note[item]{ We make up a new infix operator, \T{|+|}, for our
+        function to add two lengths. }
+    \item Bonus function: \T{\lH{\$}} is another way of doing precedence
+        without parens. These two expressions evaluate identically:
+        \begin{hlisting}
+            head   ( [1] ++ [2] )
+            head $   [1] ++ [2]
+        \end{hlisting}
+    \note[item]{ \T{\$} is actually just a regular function that you
+        could write yourself:\\
+            \T{ infixr 0 \$ }\\
+            \T{ f \$ x = f x }\\
+        It applies the function in the left-hand argument to the value
+        on its right. It works as a ``paren-remover'' because it has its
+        precedence set very low so that more stuff on the right side is
+        ``grabbed'' to be evaluated before the \T{\$} function itself is
+        evaluated. }
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Type Constructor Parameters II}
+\begin{itemize}
+    \item Constructors may have multiple params (\T{07\_Point.hs}):
+        \begin{hlisting}
+            ¦\lT{data Point = Cart Double Double | Polar Double Double}¦
+
+            ¦\lT{toCart :: Point -> Point}¦
+            toCart xy@(Cart _ _) = xy
+            toCart   (Polar r ¦θ¦) = Cart (r * cos ¦θ¦) (r * sin ¦θ¦)
+
+            ¦\lT{distanceTo :: Point -> Point -> Double}¦
+            distanceTo p1 p2 = sqrt $ (x2-x1)^2 + (y2-y1)^2
+                where Cart x1 y1 = toCart p1
+                      Cart x2 y2 = toCart p2
+        \end{hlisting}
+    \note[item]{ The pattern \T{xy@(Cart x y)} binds three variables:
+        \T{x} and \T{y} to the two deconstructed values, and \T{xy}
+        to the whole constructed value. In our example, we ignore the
+        deconstructed values because we just want to match any value
+        constructed with that pattern.}
+    \item Here we use two different constructors for different
+        representations of the same value.
+    \item More bonus syntax: \T{@} to bind the constructed value to a
+        pattern, \T{where} for local definitions, and ability to use
+        Unicode alphabets in GHC.
+    \note[item]{ GHC, with the \T{-XUnicodeSyntax} option, also allows
+        us to use Unicode characters for synatx if we want to look really
+        nice, e.g.,\\
+        \T{ notEq }::\T{ (Num α) $\Rightarrow$ α $\rightarrow$ α }\\
+        \T{ notEq x y = x $\neq$ y }
+        }
+\end{itemize}
+\end{frame}
+
+
+\subsection{Type Variables and Functions}
+
+\begin{frame}[fragile]{Variables and Functions at the Type Level}
+\begin{itemize}
+    \item Real functional languages have variables and functions, and
+        so of course our type language in Haskell has these too:
+        \begin{hlisting}
+            ¦\lT{data List a = Cons a (List a) | Nil}¦
+        \end{hlisting}
+    \note[item]{ Lists are often implemented as \emph{cons} cells,
+        a name that comes from Lisp. A cons cell is a pair of values,
+        the first of which is an element of the list, and the second
+        of which is a pointer to the next item in the list. If the
+        second value is ``nil,'', that indicates that this is the
+        last cell in the list. }
+    \item \T{List} is a type-level function that, given an \T{a} (which
+        is a type variable), creates a new type based on whatever \T{a}
+        it's given.
+        \begin{hlisting}
+            ¦\lT{l0 :: List Int}¦
+            l0 = Nil
+
+            ¦\lT{l1 :: List Int}¦
+            l1 = Cons 1 (Cons 0 Nil)
+
+            ¦\lT{la :: List Char}¦
+            la = Cons 'c' (Cons 'b' (Cons 'a' Nil))
+        \end{hlisting}
+    \item Note also that this data type is recursive! The \T{Cons}
+        constructor to create a \T{List} value takes a \T{List} value!
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Infix Type Operators and Nicer List Construction}
+\begin{itemize}
+    \item We have infix operators in the type language, too; any
+        punctuation sequence starting with a colon (\T{:}) is an
+        infix type function.
+    \item Let's use this to make a nicer syntax for constructing \T{List}s:
+        \begin{hlisting}
+            ¦\lT{data List a = a :. (List a) | Nil}¦
+            infixr 2 :.
+
+            ¦\lT{l1 :: List Int}¦
+            l1 = 1 :. 0 :. Nil
+        \end{hlisting}
+    \note[item]{ The \T{infixr 2 :.} statement makes the \T{:.} operator
+        right-associative (it defaults to left-associative, otherwise)
+        and sets the precedence to a fairly low value. }
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Functions Using Our Types}
+\begin{itemize}
+    \item We can write functions using these new types generated by our
+        type functions. For example,
+        \begin{hlisting}
+            ¦\lT{sumListOfInt :: List Int -> Int}¦
+            sumListOfInt Nil = 0
+            sumListOfInt (i :. is) = i + sumListOfInt is
+
+            ¦\lO{sumListOfInt (3 :. 7 :. 12 :. Nil)}¦
+        \end{hlisting}
+    \item But we can also write generic functions that work on any type
+        generated by our type function. For example, when we want the
+        length of the list, we don't care what's in it:
+        \begin{hlisting}
+            ¦\lT{len :: List a -> Int}¦  -- Works for List of any ¦\emph{a}¦!
+            len Nil = 0
+            len (_ :. xs) = 1 + len xs
+        \end{hlisting}
+\end{itemize}
+\end{frame}
+
+
+\section{Type Classes}
+
+\begin{frame}[fragile]{Type Classes}
+\begin{itemize}
+    \item We've seen one kind of generic function that works on
+        any type generated from a specific type constructor:
+        \begin{hlisting}
+            ¦\lT{len :: List a -> Int}¦  -- Works for List of any ¦\emph{a}¦!
+        \end{hlisting}
+    \item But sometimes we want to get even more generic than this,
+        and have a function that does the ``same thing'' on completely
+        unrelated data types that have similar semantics.
+    \item This is the motivation for ``duck typing'' in Ruby.
+    \item In Haskell, we use a \emph{type class} for this. One big
+        advantage of type classes is that they're type-checked by the
+        compiler, so that they can't go wrong in use.
+    \item Type classes are in some ways a similar concept to OO classes,
+        but they are definitely not the same thing! They're much closer
+        to interfaces.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Our Favorite Type Class}
+\begin{itemize}
+    \item Let's create a class of types where a value of each
+        type is the favorite value. For each type we'll have a
+        function \T{isFavorite} that tells us if a value is the
+        favorite value or not:
+        \begin{hlisting}
+            ¦\lT{class Favorite a where}¦
+                ¦\lT{isFavorite :: a -> Bool}¦
+
+            ¦\lT{data Color = Red | Green | Blue}¦
+            ¦\lT{instance Favorite Color where}¦
+                isFavorite Green = True
+                isFavorite _     = False
+        \end{hlisting}
+    \item A quick test in \T{ghci}:
+        \begin{olisting}
+            $ ¦\lS{ghci -v0 ex/09\_Favorite.hs}¦
+            *Main> isFavorite Blue
+            False
+            *Main> isFavorite Green
+            True
+        \end{olisting}
+\end{itemize}
+\end{frame}
+\note[enumerate]{
+    \item We declare a type class called \T{Favorite} taking a single
+        type as a parameter, $a$. (Type classes can involve more than
+        one type, which is extremely powerful, but we won't get in to
+        that here.)
+    \item For every type $a$ that's a member of this class, there must
+        exit a function \T{isFavorite} that takes a value of type $a$
+        and tells us if that value is the favorite or not.
+    \item The semantics of the \T{isFavorite} function aren't known to
+        the compiler; that's the responsibility of the programmer.
+    \item We declare a type and, using the \T{instance} keyword, declare
+        it to be an instance of class \T{Favorite}. We supply an
+        \T{isFavorite} function that does the appropriate thing for our
+        data type.
+}
+
+
+\begin{frame}[fragile]{Type Class Function Default Definitions}
+\begin{itemize}
+    \item Unlike OO interfaces, we can provide default implementations of
+        functions for a type class.
+    \item Expanding our Favorite class to two functions:
+        \begin{hlisting}
+            ¦\lT{class Favorite a where}¦
+                ¦\lT{isFavorite, notFavorite :: a -> Bool}¦
+                isFavorite  = not.notFavorite
+                notFavorite = not.isFavorite
+        \end{hlisting}
+    \note[item]{ Again, the function composition operator. For \T{isFavorite},
+        we first apply \T{notFavorite} to the argument, then apply \T{not}
+        to the result of that. }
+    \item For \T{Color} we supplied only a definition of \T{isFavorite},
+        so \T{notFavorite} uses the default definition:
+        \begin{olisting}
+            $ ¦\lS{ghci -v0 ex/09\_Favorite.hs}¦
+            *Main> notFavorite Red
+            True
+        \end{olisting}
+    \item Remember to supply at least one of the two definitions, or
+        the defaults will mutually recurse forever!
+\end{itemize}
+\end{frame}
+
+
+\subsection{Openess and Duck Typing}
+
+\begin{frame}[fragile]{Type Classes are Open}
+\begin{itemize}
+    \item Unlike types, which are \emph{closed} and cannot be changed
+        once defined, type classes are \emph{open}.
+    \item This means that you can add any type to any type class at any
+        time, even if neither the type class nor the type were created
+        by you, and even if the original creators of the type and type
+        class were entirely unaware of each other.
+    \item Let's make a pre-defined type a member of our new type class:
+        \begin{hlisting}
+            ¦\lT{instance Favorite Int where}¦
+                isFavorite = (== 42)
+        \end{hlisting}
+    \item And test it:
+        \begin{olisting}
+            $ ¦\lS{ghci -v0 ex/09\_Favorite.hs}¦
+            *Main> ¦\lH{isFavorite (42::Int)}¦
+            True
+        \end{olisting}
+    \note[item]{ Note the use of point-free style for this definition
+        of \T{isFavorite}. }
+    \note[item]{ When we use the \T{favorite} function in the \T{print}
+        commands, the compiler can't infer which \T{favorite} we're
+        trying to call because, in this situation, it doesn't have
+        enough clues. So we supply an in-line type anotation to help
+        it out. }
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Duck Typing in Haskell}
+\begin{itemize}
+    \item We can make functions that operate on values of any type in
+        a class, so long as the function restricts itself to operations
+        available in that class:
+        \begin{hlisting}
+            ¦\lT{hasFavorite :: Favorite a => [a] -> Bool}¦
+            hasFavorite (x:xs) = isFavorite x || hasFavorite xs
+            hasFavorite []     = False
+        \end{hlisting}
+    \note[item]{ The \T{Favorite a => ...} syntax says that type $a$
+        must be a member of the class \T{Favorite}. }
+    \item This works even on members of the class that are defined long
+        after the function was written.
+    \item Key point: it's statically type checked, so it can't break.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Automatic Derivation}
+\begin{itemize}
+    \item In the previous example, we had to explicitly write the
+        \T{isFavorite} function for each type.
+    \item But for some of the more popular type classes, we can ask the
+        compiler to do the work for us.
+    \note[item]{ There's special magic in the compiler that does this.
+        However, there's work being done on extending this to user-supplied
+        type classes. One is the \emph{derive} program, another is the
+        work on generic programming.}
+    \item We've seen this earlier in the presentation with \T{deriving Show}.
+    \item One example is the \T{Eq} class, which has $=$ and $\ne$ functions:
+        \begin{olisting}
+            Prelude> ¦\lT{data Color = Red | Green | Blue   deriving (Eq)}¦
+            Prelude> ¦\lH{Red == Blue}¦
+            False
+            Prelude> ¦\lH{Green /= Blue}¦
+            True
+        \end{olisting}
+\end{itemize}
+\end{frame}
+
+
+\subsection{Inheritance}
+
+\begin{frame}[fragile]{Type Class Inheritance}
+\begin{itemize}
+    \item Classes can require that their members also be members of
+        another class; this is done via \emph{inheritance}.
+    \item Let's re-implement \T{Favorite} for types in class \T{Eq}
+        (\T{ex/10\_EqFavorite.hs}). This
+        lets us use \T{==} in our functions.
+        \begin{hlisting}
+            ¦\lT{class Eq a => Favorite a where}¦
+                ¦\lT{favorite :: a}¦
+                ¦\lT{isFavorite :: a -> Bool}¦
+                isFavorite = (== favorite)
+
+            ¦\lT{data Color = Red | Green | Blue}¦
+                ¦\lT{deriving Eq}¦
+            ¦\lT{instance Favorite Color where}¦
+                favorite = Green
+
+            ¦\lT{instance Favorite Int where}¦
+                favorite = 42
+        \end{hlisting}
+\end{itemize}
+\end{frame}
+
+
+\section{And There's More...}
+
+\begin{frame}[fragile]{And There's More...}
+\begin{itemize}
+    \item There's a lot more than this:
+        \begin{itemize}
+        \item Combinators, used for domain specific languages
+        \item Algebraic structures: functor, monoid, etc.
+        \item The infamous Monad
+            (which we can build from what we've seen here)
+        \item ...
+        \end{itemize}
+    \item But you're probably sufficiently overwhelmed already.
+\end{itemize}
+\end{frame}
+
+
+\section{Summary}
+
+\begin{frame}{Summary}
+\begin{itemize}
+    \item Haskell has tons of cool stuff.
+    \item But it's all built from a relatively small language with
+        minimal syntactic sugar or other warts.
+    \item We already know some of the basics of functional programming
+        from Ruby.
+    \item You should learn Haskell!
+\end{itemize}
+\end{frame}
+
+
+\end{document}
+
+
