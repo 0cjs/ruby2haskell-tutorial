@@ -2,16 +2,26 @@ From Ruby to Haskell:  An Introduction
 ======================================
 
 This repository contains the slides, notes and support materials for
-the presentation/tutorial _From Ruby to Haskell: An Introduction_, to
-be given in Tokyo on 2013-01-22. See the [event page][event] for event
-details.
+the presentation/tutorial _From Ruby to Haskell: An Introduction_,
+given in Tokyo on 2013-01-22. The event details may still be available
+on the [event page][event].
 
 [event]: http://www.tokyorubyistmeetup.org/events/2323
 
-Though it's not required, I encourage participants to work along with me
-through the examples given. (Feel free to do this in groups of two or
-three if you are missing software or Ruby expertise.) To do this, you
-will need the following software installed on your computer:
+The presentation was done in LaTeX using the beamer package; the source
+for the presentation and a script to build it are under the src/
+subdirectory. Feel free to steal from this if you're doing your own
+presentation on whatever topic, since it may save you quite some time.
+
+Feel free to contact me at <cjs@cynic.net> if you have any questions
+either about the content of the presentation or how it was done in LaTeX
+and beamer.
+
+Using the Examples
+------------------
+
+To work through the examples given, you will need the following software
+installed on your computer:
 
 * Git
 * A text editor
