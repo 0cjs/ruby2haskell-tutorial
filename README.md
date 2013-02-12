@@ -104,3 +104,13 @@ the directory containing this README file and type `runghc Main.hs`.
 should print "Hello, world." and return you to the command line prompt.
 Feel free to change the string to something else and re-run the program
 to verify that you're comfortable with your edit/run cycle.
+
+Further Reading
+---------------
+
+If you'd like to learn more about Haskell, the book I most strongly
+recommend is Graham Hutton's _Programming in Haskell_.[hutton] It's
+short but concisely covers a great deal of what you need to know to use
+the language effectively.
+
+[hutton]: http://www.cs.nott.ac.uk/~gmh/book.html
