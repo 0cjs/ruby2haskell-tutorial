@@ -1,6 +1,16 @@
 From Ruby to Haskell:  An Introduction
 ======================================
 
+Contents:
+* Introduction
+* Using the Examples
+* Software Sources
+* Testing Your Installation
+* Further Reading
+
+Introduction
+------------
+
 This repository contains the slides, notes and support materials for
 the presentation/tutorial _From Ruby to Haskell: An Introduction_,
 given in Tokyo on 2013-01-22. The event details may still be available
