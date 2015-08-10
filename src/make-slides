@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #
-# Requires the latex-beamer package.
+# Requires the latex-beamer and texlive-fonts-recommended packages.
 #
 
 cd $(dirname $0)
