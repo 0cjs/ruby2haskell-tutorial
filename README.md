@@ -2,6 +2,7 @@ From Ruby to Haskell:  An Introduction
 ======================================
 
 Contents:
+
 * Introduction
 * Using the Examples
 * Software Sources
@@ -13,10 +14,20 @@ Introduction
 
 This repository contains the slides, notes and support materials for
 the presentation/tutorial _From Ruby to Haskell: An Introduction_,
-given in Tokyo on 2013-01-22. The event details may still be available
-on the [event page][event].
+first given in Tokyo on 2013-01-22. The event details may still be
+available on the [event page][event].
 
 [event]: http://www.tokyorubyistmeetup.org/events/2323
+
+Two versions of the ouput slides are available at the top level of this
+repository:
+
+* [slides.pdf]: the slides alone.
+* [notes.pdf]: the slides and my accompanying speaking notes, which more
+  or less cover my lecture.
+
+[slides.pdf]: https://github.com/cjs-cynic-net/ruby2haskell-tutorial/blob/master/slides.pdf
+[notes.pdf]: https://github.com/cjs-cynic-net/ruby2haskell-tutorial/blob/master/notes.pdf
 
 The presentation was done in LaTeX using the beamer package; the source
 for the presentation and a script to build it are under the src/
@@ -30,8 +41,8 @@ and beamer.
 Using the Examples
 ------------------
 
-To work through the examples given, you will need the following software
-installed on your computer:
+To work through the examples given during the tutorial, you will need
+the following software installed on your computer:
 
 * Git
 * A text editor
@@ -119,7 +130,7 @@ Further Reading
 ---------------
 
 If you'd like to learn more about Haskell, the book I most strongly
-recommend is Graham Hutton's _Programming in Haskell_.[hutton] It's
+recommend is Graham Hutton's [_Programming in Haskell_.][hutton] It's
 short but concisely covers a great deal of what you need to know to use
 the language effectively.
 
