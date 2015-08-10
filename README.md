@@ -22,9 +22,9 @@ available on the [event page][event].
 Two versions of the ouput slides are available at the top level of this
 repository:
 
-* [slides.pdf]: the slides alone.
-* [notes.pdf]: the slides and my accompanying speaking notes, which more
-  or less cover my lecture.
+* [slides.pdf]: The slides for the presentation.
+* [notes.pdf]: My speaking notes for the presentation. This more or less
+  covers my lecture, though not of course any of the Q&A with the audience.
 
 [slides.pdf]: https://github.com/cjs-cynic-net/ruby2haskell-tutorial/blob/master/slides.pdf
 [notes.pdf]: https://github.com/cjs-cynic-net/ruby2haskell-tutorial/blob/master/notes.pdf
@@ -50,7 +50,7 @@ the following software installed on your computer:
   of the original "Matz" ruby is fine)
 * The Glasgow Haskell Compiler (and interpreter)
 
-You will also need to be familiar with using Git and and your editor.
+You will also need to be familiar with using Git and your editor.
 
 Familiarity with Ruby is not strictly required, but will be quite
 useful. If you don't know Ruby, consider teaming up with someone else in
@@ -60,14 +60,14 @@ don't understand.
 The examples and code given here were developed and tested under Ubuntu
 Linux, but should work just fine under other versions of Linux, MacOS
 and Windows (though under MacOS and Windows you will need to have a
-little bit of familarity with the command line interface).
+little bit of familiarity with the command line interface).
 
 Software Sources
 ----------------
 
 #### Git
 
-Git is typically available through the packging system used with your
+Git is typically available through the packaging system used with your
 OS (except Windows); for example, the command `sudo apt-get install
 git-core` will install it on Ubuntu Linux systems. If it is not, you can
 download a client from [here][git-clients]. If you typically use a GUI
@@ -121,7 +121,7 @@ Typing `:q` at the GHCI prompt will quit back to the command line:
 
 To test that the load-and-go compiler is properly installed, change to
 the directory containing this README file and type `runghc Main.hs`.
-(This command compiles the given soruce code file and then runs it.) It
+(This command compiles the given source code file and then runs it.) It
 should print "Hello, world." and return you to the command line prompt.
 Feel free to change the string to something else and re-run the program
 to verify that you're comfortable with your edit/run cycle.
