@@ -116,7 +116,7 @@
 \begin{itemize}
     \item This presentation is an introduction to some of the cool
         features of Haskell in a way that should be comfortable
-        for Ruby prorammers.
+        for Ruby programmers.
     \item It won't really teach you to program in Haskell, but I hope
         it will show you why you should learn to do so.
     \item We're focused on showing what's available and why it's
@@ -400,7 +400,7 @@
 \begin{frame}[fragile]{Using (or Not Using) Lambdas I}
 \begin{itemize}
     \item But hang on! In the last slide we used a lambda for the
-        paramter to \T{filter} in Haskell, but not in Ruby:
+        parameter to \T{filter} in Haskell, but not in Ruby:
         \begin{rlisting}
             (0..7).select { |x| x.even? }
             ¦\lH{filter ({\B}x -> even x) [0..7]}¦
@@ -811,7 +811,7 @@
 
 \begin{frame}[fragile]{Functions that Iterate}
 \begin{itemize}
-    \item In the comparisions of Ruby and Haskell code in previous slides,
+    \item In the comparisons of Ruby and Haskell code in previous slides,
         we've seen iteration done in both with \T{map} and similar functions:
         \begin{rlisting}
             (0..7).map { |x| x*3+1 } .select { |x| x.even? }
@@ -819,7 +819,7 @@
         \end{rlisting}
     \item This is the most frequent way of iterating over data structures,
         both in Haskell and for many Ruby programmers.
-    \item \T{inejct} is less commonly in Ruby, but its Haskell equivalant,
+    \item \T{inejct} is less commonly in Ruby, but its Haskell equivalent,
         \T{fold}, is very common. To sum a list of numbers:
         \begin{rlisting}
             [1,3,5,7].inject(0) { |acc, x| x + acc }
@@ -985,7 +985,7 @@
     \item We can have multiple definitions of a function so long as their
         patterns don't overlap. The first definition with a matching
         pattern is used.
-    \note[item]{ The observant among you will note that chosing the first
+    \note[item]{ The observant among you will note that choosing the first
         matching definition of multiple definitions breaks the ``order
         doesn't matter'' rule. Well, nobody's perfect. }
     \item The underscore as the pattern for the first argument matches
@@ -1001,7 +1001,7 @@
     \item So far, we've seen what you might call the run-time language
         of Haskell. But there's another whole language that we've not
         yet even touched on: the type system.
-    \item The type system lanauge (in its basic form) is not as powerful
+    \item The type system language (in its basic form) is not as powerful
          as the run time language, but it's an extremely important part
          of Haskell, and the source of much of its power.
     \item The type system language is ``run'' at compile time, and has
@@ -1098,7 +1098,7 @@
 \begin{frame}[fragile]{Using Constructors}
 \begin{itemize}
     \item Given our data type, we use the constructors in the run-time
-        laguage both to construct values of that type and in patterns
+        language both to construct values of that type and in patterns
         that match these values:
         \begin{hlisting}
             ¦\lT{data Color = Red | Green | Blue}¦
@@ -1122,7 +1122,7 @@
     \item All this time we've actually been using compile-time
         (``static'') type checking, though you may not have noticed this.
     \item Type inference brings a lot of the convenience of dynamically
-        typed langauges without the overhead (delayed checks, run-time
+        typed languages without the overhead (delayed checks, run-time
         cost) of run-time type checking.
 \end{itemize}
 \end{frame}
@@ -1299,7 +1299,7 @@
         to the first argument, and \T{any} to the function resulting
         from that, is \T{membr x = any (==x)}. But you probably need to
         take some time work through this carefully yourself.
-    \item GHC can't automtaically infer the type of that last
+    \item GHC can't automatically infer the type of that last
         definition, so if you want to play with it you'll need to
         annotate it:\\
             \quad \T{membr :: Eq a => a -> [a] -> Bool}\\
@@ -1380,7 +1380,7 @@
         pattern, \T{where} for local definitions, and ability to use
         Unicode alphabets in GHC.
     \note[item]{ GHC, with the \T{-XUnicodeSyntax} option, also allows
-        us to use Unicode characters for synatx if we want to look really
+        us to use Unicode characters for syntax if we want to look really
         nice, e.g.,\\
         \T{ notEq }::\T{ (Num α) $\Rightarrow$ α $\rightarrow$ α }\\
         \T{ notEq x y = x $\neq$ y }
